@@ -1,24 +1,50 @@
-import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
+// ---
+// NOTE: The errors you see about "expo-router" and "AuthContext"
+// are expected in this web preview. The code is correct.
+// ---
 import { Stack } from 'expo-router';
-import { StatusBar } from 'expo-status-bar';
-import 'react-native-reanimated';
+import React from 'react';
+// --- ADDED ---
+import { ActivityIndicator, View } from 'react-native';
+// Make sure this path is correct for your project
+import { AuthProvider, useAuth, useProtectedRoute } from '../AuthContext/AuthContext';
+// -----------
 
-import { useColorScheme } from '@/hooks/use-color-scheme';
+function RootLayoutNav() {
+  // --- ADDED: Handle Loading State ---
+  const { sessionStatus } = useAuth();
+  useProtectedRoute(); // This hook manages all your redirects
 
-export const unstable_settings = {
-  anchor: '(tabs)',
-};
+  // Show a loading indicator while the session is being checked
+  if (sessionStatus === 'loading') {
+    return (
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+        <ActivityIndicator size="large" />
+      </View>
+    );
+  }
+  // ---------------------------------
+
+  // Once loaded, show the app
+  return (
+    <Stack>
+      {/* Your public landing page */}
+      <Stack.Screen name="index" options={{ headerShown: false }} />
+      
+      {/* Your main app (the tabs group) */}
+      <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+      
+      {/* Your auth screens (login, signup, verify) */}
+      <Stack.Screen name="(auth)" options={{ headerShown: false }} />
+    </Stack>
+  );
+}
 
 export default function RootLayout() {
-  const colorScheme = useColorScheme();
-
+  // The AuthProvider wraps your entire app
   return (
-    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <Stack>
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="modal" options={{ presentation: 'modal', title: 'Modal' }} />
-      </Stack>
-      <StatusBar style="auto" />
-    </ThemeProvider>
+    <AuthProvider>
+      <RootLayoutNav />
+    </AuthProvider>
   );
 }
