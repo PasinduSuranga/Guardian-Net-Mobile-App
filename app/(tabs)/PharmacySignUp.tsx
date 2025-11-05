@@ -1,3 +1,4 @@
+// app/(auth)/signup.tsx
 import { Link, useRouter } from 'expo-router';
 import React, { useState } from 'react';
 import {
@@ -18,7 +19,6 @@ const { width, height } = Dimensions.get('window');
 
 // Responsive sizing helpers
 const isSmallDevice = height < 700;
-const isMediumDevice = height >= 700 && height < 850;
 const isSmallWidth = width < 375;
 
 // --- IMPORTANT ---
@@ -74,10 +74,7 @@ export default function SignUpScreen() {
       showError('Please enter your contact number');
       return false;
     }
-    // Remove spaces and special characters for validation
     const cleanedContact = contact.replace(/[\s\-\(\)]/g, '');
-    
-    // Check if it contains only digits and optional + at start
     const phoneRegex = /^\+?[0-9]{10,15}$/;
     if (!phoneRegex.test(cleanedContact)) {
       showError('Please enter a valid contact number (10-15 digits)');
@@ -167,7 +164,12 @@ export default function SignUpScreen() {
       }
     } catch (err: any) {
       setLoading(false);
-      if (err.message === 'Network request failed' || err.message.includes('fetch') || err.name === 'TypeError') {
+      const networkError = 
+        err.message === 'Network request failed' || 
+        err.message.includes('fetch') || 
+        err.name === 'TypeError';
+      
+      if (networkError) {
         showError('Connection failed. Please check your internet and try again.');
       } else {
         showError('Something went wrong. Please try again later.');
