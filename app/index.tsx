@@ -46,7 +46,7 @@ export default function LandingScreen() {
               </View>
             </View>
 
-            <Link href="/(auth)/login" asChild>
+            <Link href="/(tabs)/login" asChild>
               <TouchableOpacity style={styles.button}>
                 <Text style={styles.buttonText}>Get Started</Text>
               </TouchableOpacity>
