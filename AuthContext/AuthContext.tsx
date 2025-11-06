@@ -6,11 +6,11 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { usePathname, useRouter, useSegments } from 'expo-router';
 import React, {
-    createContext,
-    PropsWithChildren,
-    useContext,
-    useEffect,
-    useState,
+  createContext,
+  PropsWithChildren,
+  useContext,
+  useEffect,
+  useState,
 } from 'react';
 
 // --- UPDATED ---
@@ -70,7 +70,7 @@ export function useProtectedRoute() {
 
     // 2. User IS signed in and IS in the (auth) group (e.g., login page)
     if (sessionStatus === 'authenticated' && inAuthGroup) {
-      router.replace('/(tabs)/about');
+      router.replace('/(tabs)/findCaregivers');
     }
   }, [router, pathname, sessionStatus, segments]);
 }
