@@ -11,9 +11,11 @@ import { AuthProvider, useAuth, useProtectedRoute } from '../AuthContext/AuthCon
 // -----------
 
 function RootLayoutNav() {
+
+  useProtectedRoute();
   // --- ADDED: Handle Loading State ---
   const { sessionStatus } = useAuth();
-  useProtectedRoute(); // This hook manages all your redirects
+  // useProtectedRoute(); // This hook manages all your redirects
 
   // Show a loading indicator while the session is being checked
   if (sessionStatus === 'loading') {
@@ -36,6 +38,11 @@ function RootLayoutNav() {
       
       {/* Your auth screens (login, signup, verify) */}
       <Stack.Screen name="(auth)" options={{ headerShown: false }} />
+
+      <Stack.Screen name="editUserProfile" options={{ headerShown: false }} />
+
+      <Stack.Screen name="changePassword" options={{ headerShown: false }} />
+
     </Stack>
   );
 }

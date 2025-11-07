@@ -1,15 +1,27 @@
-// ---
-// NOTE: The errors you see about "expo-router", "@expo/vector-icons",
-// and "AuthContext" are expected in this web preview.
-// ---
+import { Tabs } from 'expo-router';
+import React from 'react';
 
+export default function TabsLayout() {
+  return (
+    // Add the screenOptions prop here
+    <Tabs
+      screenOptions={{
+        headerShown: false, // 👈 This hides the header
+      }}
+    >
+      <Tabs.Screen
+        name="home" // 👈 This matches 'home.tsx'
+        options={{
+          title: 'Home', // 👈 This is the text label on the tab
+        }}
+      />
 
-// NOTE: These imports will show as errors in this web preview,
-// but they are correct for your Expo project.
-
-
-
-
-
-/// Find Caregivers Tab
-
+      {/* <Tabs.Screen
+        name="settings"
+        options={{
+          title: 'Settings',
+        }}
+      /> */}
+    </Tabs>
+  );
+}

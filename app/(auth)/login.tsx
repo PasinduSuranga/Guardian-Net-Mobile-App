@@ -24,7 +24,7 @@ const isSmallWidth = width < 375;
 
 // --- IMPORTANT ---
 // Replace this with your computer's local IP address
-const API_URL = 'http://192.168.8.139:5000/api/auth';
+const API_URL = 'http://192.168.43.117:5000/api/auth';
 // ---------------
 
 export default function LoginScreen() {
@@ -55,70 +55,90 @@ export default function LoginScreen() {
     ]).start(() => setErrorMessage(''));
   };
 
-  const handleSignIn = async () => {
-    // Validation
-    if (!email.trim()) {
-      showError('Please enter your email address');
-      return;
-    }
-    if (!password.trim()) {
-      showError('Please enter your password');
-      return;
-    }
-    if (!/\S+@\S+\.\S+/.test(email)) {
-      showError('Please enter a valid email address');
-      return;
-    }
+// Make sure you have these imports in your file
+// import { useAuth } from './AuthContext'; 
+// import { useRouter } from 'expo-router';
 
-    setLoading(true);
-    setErrorMessage('');
+// ... inside your component
+// const { signIn } = useAuth();
+// const router = useRouter();
 
-    try {
-      const res = await fetch(`${API_URL}/login`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ email, password }),
-      });
+const handleSignIn = async () => {
+  // Validation
+  if (!email.trim()) {
+    showError('Please enter your email address');
+    return;
+  }
+  if (!password.trim()) {
+    showError('Please enter your password');
+    return;
+  }
+  if (!/\S+@\S+\.\S+/.test(email)) {
+    showError('Please enter a valid email address');
+    return;
+  }
 
-      const data = await res.json();
-      setLoading(false);
+  setLoading(true);
+  setErrorMessage('');
 
-      if (!res.ok) {
-        // Handle "USER_NOT_VERIFIED" code from backend
-        if (data.code === 'USER_NOT_VERIFIED') {
-          showError('Account verification required. Redirecting...', 2500);
-          setTimeout(() => {
-            router.push({
-              pathname: '/(auth)/verify',
-              params: { email },
-            });
-          }, 2500);
-        } else if (res.status === 401) {
-          showError('Invalid email or password. Please try again.');
-        } else if (res.status === 404) {
-          showError('Account not found. Please sign up first.');
-        } else {
-          showError(data.message || 'Unable to sign in. Please try again.');
-        }
+  try {
+    const res = await fetch(`${API_URL}/login`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ email, password }),
+    });
+
+    const data = await res.json();
+
+    // REMOVED: The `if (data.token)` here was a bug.
+    // We only want to sign in if res.ok is true.
+
+    if (!res.ok) {
+      // Handle "USER_NOT_VERIFIED" code from backend
+      if (data.code === 'USER_NOT_VERIFIED') {
+        showError('Account verification required. Redirecting...', 2500);
+        setTimeout(() => {
+          router.push({
+            pathname: '/(auth)/verify',
+            params: { email },
+          });
+        }, 2500);
+      } else if (res.status === 401) {
+        showError('Invalid email or password. Please try again.');
+      } else if (res.status === 404) {
+        showError('Account not found. Please sign up first.');
       } else {
-        await signIn(data.token);
+        showError(data.message || 'Unable to sign in. Please try again.');
       }
-    } catch (err: any) {
-      setLoading(false);
-      // Handle network errors gracefully
-      if (err.message === 'Network request failed' || err.message.includes('fetch') || err.name === 'TypeError') {
-        showError('Connection failed. Please check your internet and try again.');
-      } else {
-        showError('Something went wrong. Please try again later.');
-      }
-      console.error(err);
+    } else {
+      // This is the only place we should sign in
+      await signIn(data.token);
+      // The useProtectedRoute hook will handle the redirect
     }
-  };
+  } catch (err: any) {
+    // Handle network errors gracefully
+    if (
+      err.message === 'Network request failed' ||
+      err.message.includes('fetch') ||
+      err.name === 'TypeError'
+    ) {
+      showError('Connection failed. Please check your internet and try again.');
+    } else {
+      showError('Something went wrong. Please try again later.');
+    }
+    console.error(err);
+  } finally {
+    // --- THIS IS THE FIX ---
+    // This will run no matter what,
+    // stopping the "buffering"
+    setLoading(false);
+  }
+};
 
   const handleGuest = () => {
-    router.replace('/about');
+    router.replace('/(tabs)/home');
   };
 
   return (

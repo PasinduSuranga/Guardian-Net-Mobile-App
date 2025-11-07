@@ -13,8 +13,7 @@ import React, {
   useState,
 } from 'react';
 
-// --- UPDATED ---
-// We've added the 'loading' state back.
+// ---
 interface AuthContextType {
   session: string | null;
   sessionStatus: 'loading' | 'authenticated' | 'unauthenticated';
@@ -24,7 +23,7 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType>({
   session: null,
-  sessionStatus: 'loading', // <-- UPDATED: Start in 'loading' state
+  sessionStatus: 'loading',
   signIn: async () => {},
   signOut: async () => {},
 });
@@ -44,34 +43,48 @@ export function useProtectedRoute() {
   const segments = useSegments();
 
   useEffect(() => {
-    // --- ADDED BACK ---
-    // Do nothing while the session is being loaded.
+    // 1. Wait until the session is loaded
     if (sessionStatus === 'loading') {
       return;
     }
-    // -----------------
-
 
     const inAuthGroup = segments[0] === '(auth)';
+    
+    // This `isLandingPage` variable now correctly treats
+    // both the root and the home screen as public pages.
+    const isLandingPage = pathname === "/" ;
+    const isHomePage = pathname === "/home" || pathname === "/userprofile";
 
-    // These are your public pages
-    const isPublicPage =
-      pathname === "/" || pathname === "/about";
+    console.log(`
+      --- AUTH HOOK DEBUG ---
+      Pathname: ${pathname}
+      Status: ${sessionStatus}
+      isLanding: ${isLandingPage}
+      isHome: ${isHomePage}
+      inAuth: ${inAuthGroup}
+    `);
 
-
-    // 1. User is not signed in and is trying to access a protected route.
-    if (
-      sessionStatus === 'unauthenticated' &&
-      !inAuthGroup &&
-      !isPublicPage
-    ) {
-      router.replace('/(auth)/login');
+    // 2. Logic for AUTHENTICATED users
+    if (sessionStatus === 'authenticated') {
+      // 2a. If they are on a public page OR in the (auth) group...
+      if (isLandingPage || inAuthGroup) {
+        // ...redirect them to home.
+        router.replace('/(tabs)/home');
+      }
+    }
+    
+    // 3. Logic for UNUTHENTICATED users
+    else if (sessionStatus === 'unauthenticated') {
+      // 3a. If they are trying to access a protected route 
+      // (i.e., NOT a public page AND NOT in the auth group)
+      if (!isLandingPage && !inAuthGroup && !isHomePage) {
+        // ...redirect them to the landing page.
+        router.replace('/');
+      }
+      // 3b. If they are on a public page (like / or /tabs/home)
+      // or in the auth group, they are fine. Do nothing.
     }
 
-    // 2. User IS signed in and IS in the (auth) group (e.g., login page)
-    if (sessionStatus === 'authenticated' && inAuthGroup) {
-      router.replace('/(tabs)/findCaregivers');
-    }
   }, [router, pathname, sessionStatus, segments]);
 }
 
@@ -79,15 +92,11 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
   const [session, setSession] = useState<string | null>(null);
   const [sessionStatus, setSessionStatus] = useState<
     'loading' | 'authenticated' | 'unauthenticated'
-  >('loading'); // <-- UPDATED: Start in 'loading' state
-  
-  const router = useRouter();
+  >('loading');
 
-  // --- ADDED BACK: LOAD SESSION FROM STORAGE ---
   useEffect(() => {
     const loadSession = async () => {
       try {
-        // Check storage for the token
         const token = await AsyncStorage.getItem('session');
         if (token) {
           setSession(token);
@@ -103,36 +112,29 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
 
     loadSession();
   }, []);
-  // -----------------------------------------
 
   const authValue: AuthContextType = {
     session,
     sessionStatus,
     signIn: async (token: string) => {
       try {
-        // --- ADDED BACK ---
-        // Save the token to storage
         await AsyncStorage.setItem('session', token);
-        // ------------------
         setSession(token);
         setSessionStatus('authenticated');
-        // Let the useProtectedRoute hook handle redirects
+        // The useProtectedRoute hook will automatically handle
+        // the redirect to '/(tabs)/home' now.
       } catch (e) {
         console.error('Failed to set session state or storage', e);
       }
     },
     signOut: async () => {
       try {
-        // --- ADDED BACK ---
-        // Remove the token from storage
         await AsyncStorage.removeItem('session');
-        // ------------------
         setSession(null);
         setSessionStatus('unauthenticated');
         
-        // Redirect to landing page ('/') on sign out.
-        router.replace('/');
-
+        // The useProtectedRoute hook will automatically handle
+        // the redirect to '/' now.
       } catch (e) {
         console.error('Failed to clear session or storage', e);
       }
@@ -143,4 +145,3 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
     <AuthContext.Provider value={authValue}>{children}</AuthContext.Provider>
   );
 };
-

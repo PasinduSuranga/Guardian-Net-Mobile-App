@@ -1,69 +1,92 @@
+import { Link } from "expo-router";
 import React from "react";
-import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import {
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { useAuth } from "../../AuthContext/AuthContext";
+
+const GuestPrompt = () => {
+  return (
+    <View style={styles.guestPromptContainer}>
+      <Text style={styles.guestPromptText}>
+        Log in or create an account to access more features.
+      </Text>
+      <Link href="/(auth)/login" asChild>
+        <TouchableOpacity style={styles.loginButton} activeOpacity={0.7}>
+          <Text style={styles.loginButtonText}>Login / Sign Up</Text>
+        </TouchableOpacity>
+      </Link>
+    </View>
+  );
+};
 
 export default function HomeScreen() {
-  const handleFindCaregiver = () => {
-    // Navigate to caregiver search screen
-    console.log("Navigate to Find Caregiver");
-  };
+  const { sessionStatus } = useAuth();
 
-  const handleViewMedicines = () => {
-    // Navigate to medicine reminders screen
-    console.log("Navigate to View Medicines");
-  };
+  const handleFindCaregiver = () => {};
+  const handleViewMedicines = () => {};
 
   return (
-    <ScrollView contentContainerStyle={styles.container}>
-      <View style={styles.header}>
-        <Text style={styles.title}>Welcome to Guardian Net</Text>
-        <Text style={styles.subtitle}>
-          Your trusted partner for professional caregiving services.
-        </Text>
-      </View>
-
-      <View style={styles.cardsContainer}>
-        <View style={styles.card}>
-          <Text style={styles.cardTitle}>Find a Caregiver</Text>
-          <Text style={styles.cardText}>
-            Search and book qualified caregivers for home or hospital care.
+    <SafeAreaView style={styles.safeArea}>
+      <ScrollView contentContainerStyle={styles.container}>
+        <View>
+          <Text style={styles.title}>Welcome to Guardian Net</Text>
+          <Text style={styles.subtitle}>
+            Your trusted partner for professional caregiving and medicine
+            delivery services.
           </Text>
-          <TouchableOpacity
-            style={styles.button}
-            onPress={handleFindCaregiver}
-            activeOpacity={0.7}
-          >
-            <Text style={styles.buttonText}>Find Caregiver</Text>
-          </TouchableOpacity>
         </View>
 
-        <View style={styles.card}>
-          <Text style={styles.cardTitle}>Medicine Reminders</Text>
-          <Text style={styles.cardText}>
-            Set and manage your daily medicine schedule easily.
-          </Text>
-          <TouchableOpacity
-            style={styles.button}
-            onPress={handleViewMedicines}
-            activeOpacity={0.7}
-          >
-            <Text style={styles.buttonText}>View Medicines</Text>
-          </TouchableOpacity>
+        {sessionStatus !== "authenticated" && <GuestPrompt />}
+
+        <View style={styles.cardsContainer}>
+          <View style={styles.card}>
+            <Text style={styles.cardTitle}>Find a Caregiver</Text>
+            <Text style={styles.cardText}>
+              Search and hire qualified caregivers you can trust.
+            </Text>
+            <TouchableOpacity
+              style={styles.cardButton}
+              onPress={handleFindCaregiver}
+              activeOpacity={0.7}
+            >
+              <Text style={styles.cardButtonText}>Find Caregivers</Text>
+            </TouchableOpacity>
+          </View>
+
+          <View style={styles.card}>
+            <Text style={styles.cardTitle}>Find a Medicine</Text>
+            <Text style={styles.cardText}>
+              Find the medicines you need and delivered right to your doorstep.
+            </Text>
+            <TouchableOpacity
+              style={styles.cardButton}
+              onPress={handleViewMedicines}
+              activeOpacity={0.7}
+            >
+              <Text style={styles.cardButtonText}>Find Medicines</Text>
+            </TouchableOpacity>
+          </View>
         </View>
-      </View>
-    </ScrollView>
+      </ScrollView>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
+  safeArea: {
+    flex: 1,
+    backgroundColor: "#A8D1D1",
+  },
   container: {
     flexGrow: 1,
     backgroundColor: "#A8D1D1",
     padding: 20,
-  },
-  header: {
-    alignItems: "center",
-    marginTop: 20,
-    marginBottom: 10,
   },
   title: {
     fontSize: 26,
@@ -71,6 +94,7 @@ const styles = StyleSheet.create({
     color: "#3A5A5A",
     textAlign: "center",
     marginBottom: 8,
+    marginTop: 60,
   },
   subtitle: {
     fontSize: 16,
@@ -106,13 +130,38 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     lineHeight: 20,
   },
-  button: {
+  cardButton: {
     backgroundColor: "#6FADB0",
     paddingVertical: 12,
     borderRadius: 8,
     alignItems: "center",
   },
-  buttonText: {
+  cardButtonText: {
+    color: "#FFFFFF",
+    fontSize: 16,
+    fontWeight: "bold",
+  },
+  guestPromptContainer: {
+    backgroundColor: "#E0F2F2",
+    borderRadius: 12,
+    padding: 16,
+    marginVertical: 20,
+    alignItems: "center",
+  },
+  guestPromptText: {
+    fontSize: 15,
+    color: "#3A5A5A",
+    textAlign: "center",
+    marginBottom: 16,
+  },
+  loginButton: {
+    backgroundColor: "#4A8F8F",
+    paddingVertical: 12,
+    paddingHorizontal: 32,
+    borderRadius: 8,
+    alignItems: "center",
+  },
+  loginButtonText: {
     color: "#FFFFFF",
     fontSize: 16,
     fontWeight: "bold",

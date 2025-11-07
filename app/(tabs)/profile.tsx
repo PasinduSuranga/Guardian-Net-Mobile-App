@@ -1,7 +1,5 @@
 import React from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-// NOTE: These imports will show as errors in this web preview,
-// but they are correct for your Expo project.
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useAuth } from '../../AuthContext/AuthContext';
 

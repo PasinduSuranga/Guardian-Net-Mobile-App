@@ -24,7 +24,7 @@ const isSmallWidth = width < 375;
 
 // --- IMPORTANT ---
 // Replace this with your computer's local IP address
-const API_URL = 'http://192.168.8.139:5000/api/auth';
+const API_URL = 'http://192.168.43.117:5000/api/auth';
 // ---------------
 
 export default function VerifyScreen() {
