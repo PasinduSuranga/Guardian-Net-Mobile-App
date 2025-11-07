@@ -46,7 +46,7 @@ export default function LandingScreen() {
               </View>
             </View>
 
-            <Link href="/(tabs)/login" asChild>
+            <Link href={"/(tabs)/CareGiverRegistration.tsx" as any }asChild>
               <TouchableOpacity style={styles.button}>
                 <Text style={styles.buttonText}>Get Started</Text>
               </TouchableOpacity>
