@@ -13,7 +13,7 @@ import {
     View,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useAuth } from '../../AuthContext/AuthContext';
+import { useAuth } from '../../AuthContext/AuthContext'; // Check this path
 
 const { width, height } = Dimensions.get('window');
 
@@ -118,12 +118,15 @@ export default function LoginScreen() {
   };
 
   const handleGuest = () => {
-    router.replace('/about');
+    // --- THIS IS A SMALL FIX ---
+    // Replaced '/about' with '/(tabs)' to go to your tab layout
+    router.replace('/(tabs)/about');
+    // -------------------------
   };
 
   return (
     <SafeAreaView style={styles.container}>
-      <ScrollView 
+      <ScrollView
         contentContainerStyle={styles.scrollContainer}
         showsVerticalScrollIndicator={false}
         keyboardShouldPersistTaps="handled"
@@ -180,6 +183,16 @@ export default function LoginScreen() {
               />
             </View>
 
+            {/* --- THIS IS THE NEWLY ADDED BLOCK --- */}
+            <View style={styles.forgotPasswordContainer}>
+              <Link href="/(auth)/forgotPassword" asChild>
+                <TouchableOpacity disabled={loading}>
+                  <Text style={styles.linkText}>Forgot Password?</Text>
+                </TouchableOpacity>
+              </Link>
+            </View>
+            {/* ------------------------------------ */}
+
             <TouchableOpacity
               style={[styles.button, loading && styles.buttonDisabled]}
               onPress={handleSignIn}
@@ -199,8 +212,8 @@ export default function LoginScreen() {
               <View style={styles.dividerLine} />
             </View>
 
-            <TouchableOpacity 
-              style={styles.guestButton} 
+            <TouchableOpacity
+              style={styles.guestButton}
               onPress={handleGuest}
               disabled={loading}
               activeOpacity={0.8}
@@ -334,12 +347,22 @@ const styles = StyleSheet.create({
       },
     }),
   },
+  // --- THIS IS THE NEW STYLE FOR THE LINK ---
+  forgotPasswordContainer: {
+    alignItems: 'flex-end',
+    marginTop: isSmallDevice ? -10 : -12,
+    marginBottom: isSmallDevice ? 16 : 20,
+  },
+  // ----------------------------------------
   button: {
     backgroundColor: '#6FADB0',
     paddingVertical: isSmallDevice ? 15 : 17,
     borderRadius: 12,
     alignItems: 'center',
-    marginTop: 8,
+    // --- CHANGED THIS ---
+    // Gave it a bit of top margin
+    marginTop: isSmallDevice ? 10 : 12,
+    // --------------------
     ...Platform.select({
       ios: {
         shadowColor: '#4A8F8F',
