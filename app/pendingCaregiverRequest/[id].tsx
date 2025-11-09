@@ -1,7 +1,17 @@
+import { useLocalSearchParams, useRouter } from "expo-router"; // 👈 ADDED
 import React, { useEffect, useState } from "react";
-import { Animated, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import {
+    Animated, // 👈 REMOVED Image, we use Animated.Image
+    StyleSheet,
+    Text,
+    TouchableOpacity,
+    View
+} from "react-native";
 
 export default function BookingPendingScreen({ }) {
+  const router = useRouter(); // 👈 ADDED
+  const { id } = useLocalSearchParams(); // 👈 ADDED - This gets the booking ID from the URL
+
   const [pulseAnim] = useState(new Animated.Value(1));
   const [fadeAnim] = useState(new Animated.Value(0));
   const [dots, setDots] = useState("");
@@ -41,6 +51,20 @@ export default function BookingPendingScreen({ }) {
     return () => clearInterval(interval);
   }, []);
 
+  // --- ADDED Button Handlers ---
+  const handleBackToHome = () => {
+    // We use 'replace' to clear the stack, so the user can't go "back"
+    router.replace("/(tabs)/home");
+  };
+
+  const handleViewBooking = () => {
+    // This will navigate to the "edit" screen for this specific booking
+    // This assumes your file is at `app/editBooking/[id].tsx`
+    const bookingId = Array.isArray(id) ? id[0] : id;
+    router.push(`/editBooking/${bookingId}`);
+  };
+  // ---------------------------
+
   return (
     <Animated.View style={[styles.container, { opacity: fadeAnim }]}>
       <Animated.Image
@@ -76,6 +100,7 @@ export default function BookingPendingScreen({ }) {
         <TouchableOpacity
           style={styles.button}
           activeOpacity={0.8}
+          onPress={handleBackToHome} // 👈 WIRED UP
         >
           <Text style={styles.buttonText}>Back to Home</Text>
         </TouchableOpacity>
@@ -83,6 +108,7 @@ export default function BookingPendingScreen({ }) {
         <TouchableOpacity
           style={styles.secondaryButton}
           activeOpacity={0.7}
+          onPress={handleViewBooking} // 👈 WIRED UP
         >
           <Text style={styles.secondaryButtonText}>View Booking Details</Text>
         </TouchableOpacity>

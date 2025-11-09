@@ -53,7 +53,8 @@ export function useProtectedRoute() {
     // This `isLandingPage` variable now correctly treats
     // both the root and the home screen as public pages.
     const isLandingPage = pathname === "/" ;
-    const isHomePage = pathname === "/home" || pathname === "/userprofile";
+    const isHomePage = pathname === "/home" || pathname === "/userprofile" || pathname === "/availableCaregivers";
+    const ispublic =  pathname.startsWith("/caregiverBooking/") || pathname.startsWith("/caregiverProfile");
 
     console.log(`
       --- AUTH HOOK DEBUG ---
@@ -77,7 +78,7 @@ export function useProtectedRoute() {
     else if (sessionStatus === 'unauthenticated') {
       // 3a. If they are trying to access a protected route 
       // (i.e., NOT a public page AND NOT in the auth group)
-      if (!isLandingPage && !inAuthGroup && !isHomePage) {
+      if (!isLandingPage && !inAuthGroup && !isHomePage && !ispublic) {
         // ...redirect them to the landing page.
         router.replace('/');
       }

@@ -43,6 +43,112 @@ function RootLayoutNav() {
 
       <Stack.Screen name="changePassword" options={{ headerShown: false }} />
 
+      <Stack.Screen name="availableCaregivers" options={{ headerShown: false }} />
+
+      <Stack.Screen 
+        name="caregiverBooking/[id]" 
+        options={{ 
+          title: 'Book Appointment',
+          presentation: 'modal',
+          headerShown: false // This will make it slide up
+        }} 
+      />
+
+      <Stack.Screen 
+        name="caregiverProfile/[id]" 
+        options={{ 
+          title: 'view profile',
+          presentation: 'modal',
+          headerShown: false // This will make it slide up
+        }} 
+      />
+
+      <Stack.Screen 
+        name="pendingCaregiverRequest/[id]" 
+        options={{ 
+          title: 'pending request',
+          presentation: 'modal',
+          headerShown: false // This will make it slide up
+        }} 
+      />
+
+      <Stack.Screen 
+        name="editBooking/[id]" 
+        options={{ 
+          title: 'edit booking',
+          presentation: 'modal',
+          headerShown: false // This will make it slide up
+        }} 
+      />
+
+      <Stack.Screen
+        name='bookingSuccess/[id]'
+        options={{
+          title: 'booking success',
+          presentation: 'modal',
+          headerShown: false
+        }}
+        />
+
+        <Stack.Screen 
+        name="payment/[id]" 
+        options={{ title: 'Complete Payment', presentation: 'modal', headerShown: false }} 
+      />
+      <Stack.Screen 
+        name="paymentSuccess" 
+        options={{ title: 'Payment Submitted', presentation: 'modal', headerShown: false }} 
+      />
+
+      <Stack.Screen 
+        name="paymentPending" 
+        options={{ title: 'Payment review', presentation: 'modal', headerShown: false }} 
+      />
+
+      <Stack.Screen 
+        name="finalPayment/[id]" 
+        options={{ title: 'Final Payment', presentation: 'modal' }} 
+      />
+
+
+      <Stack.Screen 
+        name="medicineRequestPending/[id]" 
+        options={{ 
+          title: 'Medicine Request Pending',
+          presentation: 'modal'
+        }} 
+      />
+
+
+      <Stack.Screen 
+        name="medicineQuotes/[id]" 
+        options={{ 
+          title: 'Pharmacy Quotes',
+          presentation: 'modal'
+        }} 
+      />
+
+      <Stack.Screen 
+        name="medicineOrder/[id]" 
+        options={{ 
+          title: 'Place Your Order',
+          presentation: 'modal'
+        }} 
+      />
+      <Stack.Screen 
+        name="medicineOrderSuccess" 
+        options={{ 
+          title: 'Order Sent',
+          presentation: 'modal',
+          headerShown: false
+        }} 
+      />
+
+
+      <Stack.Screen 
+        name="medicinePayment/[id]" 
+        options={{ title: 'Complete Order', presentation: 'modal' }} 
+      />
+
     </Stack>
   );
 }

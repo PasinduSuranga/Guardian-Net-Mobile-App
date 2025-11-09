@@ -1,4 +1,4 @@
-import { Link } from "expo-router";
+import { Link, router } from "expo-router";
 import React from "react";
 import {
   ScrollView,
@@ -28,8 +28,12 @@ const GuestPrompt = () => {
 export default function HomeScreen() {
   const { sessionStatus } = useAuth();
 
-  const handleFindCaregiver = () => {};
-  const handleViewMedicines = () => {};
+  const handleFindCaregiver = () => {
+    router.push('/availableCaregivers')
+  };
+  const handleViewMedicines = () => {
+    router.push('/findmedicine')
+  };
 
   return (
     <SafeAreaView style={styles.safeArea}>
