@@ -25,6 +25,8 @@ export default function TabsLayout() {
           
           if (route.name === 'home') {
             iconName = 'home-outline';
+          } else if (route.name === 'myactivities') { // 👈 ADDED THIS
+            iconName = 'list-outline';
           } else if (route.name === 'notifications') {
             iconName = 'notifications-outline';
           } else if (route.name === 'userprofile') {
@@ -44,6 +46,12 @@ export default function TabsLayout() {
         name="home" 
         options={{ title: 'Home' }} 
       />
+
+      <Tabs.Screen 
+        name="myactivities" 
+        options={{ title: 'My Activities' }} 
+      />
+      
       <Tabs.Screen 
         name="notifications" 
         options={{ title: 'Notifications' }} 
